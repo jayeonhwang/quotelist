@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
 
 export function QuoteIndex() {
   const [quotes, setQuotes] = useState([])
 
-  const getQuote = () => {
-    console.log("getQuote")
-    axios.get("https://gist.githubusercontent.com/benchprep/dffc3bffa9704626aa8832a3b4de5b27/raw/quotes.json").then(
-      response => {
-        console.log(response.data)
-        setQuotes(response.data)
-      })
-  }
+  const getQuote = async () => {
+    try {
+      const response = await fetch("https://gist.githubusercontent.com/benchprep/dffc3bffa9704626aa8832a3b4de5b27/raw/quotes.json");
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-  useEffect(getQuote, []);
+      const data = await response.json();
+      setQuotes(data);
+    } catch (error) {
+      console.error('Error fetching quotes:', error);
+    }
+  };
+
+  useEffect(() => {
+    getQuote();
+  }, []);
 
 
   return (
