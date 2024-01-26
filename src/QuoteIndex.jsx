@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 
 export function QuoteIndex() {
   const [quotes, setQuotes] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 15;
 
   const getQuote = async () => {
     try {
@@ -21,17 +23,39 @@ export function QuoteIndex() {
     getQuote();
   }, []);
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage
+  const currentItems = quotes.slice(startIndex, endIndex)
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1)
+    }
+  }
+
+  const handleNextPage = () => {
+    const totalPages = Math.ceil(quotes.length / itemsPerPage);
+    console.log('totalPages:', totalPages);
+
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div>
       <p>Qoute Index</p>
-      {quotes.map(quote => (
-        <div key={quote.source}>
-          <p><b>Source:{quote.source}</b></p>
-          <p>{quote.quote}</p>
-
-        </div>
-      ))}
+      <ul>
+        {currentItems.map(item => (
+          <li key={item.source}>
+            <p><b>Source:{item.source}</b></p>
+            <p>{item.quote}</p>
+            <hr />
+          </li>
+        ))}
+      </ul>
+      <button onClick={handlePreviousPage}>Previous</button>
+      <button onClick={handleNextPage}>Next</button>
     </div>
   )
 }
