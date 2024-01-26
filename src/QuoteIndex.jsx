@@ -3,7 +3,10 @@ import { useState, useEffect } from "react"
 export function QuoteIndex() {
   const [quotes, setQuotes] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [filteredQuotes, setFilteredQuotes] = useState(quotes)
   const itemsPerPage = 15;
+
+  //fetch quotes
 
   const getQuote = async () => {
     try {
@@ -23,6 +26,7 @@ export function QuoteIndex() {
     getQuote();
   }, []);
 
+  //pagenation
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage
   const currentItems = quotes.slice(startIndex, endIndex)
@@ -31,27 +35,47 @@ export function QuoteIndex() {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1)
     }
+    console.log('currentPage:', currentPage)
   }
 
   const handleNextPage = () => {
     const totalPages = Math.ceil(quotes.length / itemsPerPage);
-    console.log('totalPages:', totalPages);
-
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
+      console.log('currentPage:', currentPage);
     }
   };
+
+  //filter between game and movies
+
+  const handleFilter = (event) => {
+    const value = event.target.value
+    const filtered = quotes.filter(quote => quote.theme.includes(value));
+    setFilteredQuotes(filtered)
+  }
+
 
   return (
     <div>
       <p>Qoute Index</p>
       <ul>
+        <div>
+          <input type="text" onChange={handleFilter} />
+          {filteredQuotes.map(quote => (
+            <div key={quote.source}>
+              <p><b>"{quote.quote}"</b></p>
+              <p>{quote.source}</p>
+              <p>{quote.theme}</p>
+              <hr />
+            </div>
+          ))}
+        </div>
         {currentItems.map(item => (
-          <li key={item.source}>
-            <p><b>Source:{item.source}</b></p>
-            <p>{item.quote}</p>
+          <div key={item.source}>
+            <p><b>"{item.quote}"</b></p>
+            <p>{item.source}</p>
             <hr />
-          </li>
+          </div>
         ))}
       </ul>
       <button onClick={handlePreviousPage}>Previous</button>
