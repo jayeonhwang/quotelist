@@ -26,8 +26,10 @@ export function QuoteIndex() {
     <div>
       <p>Qoute Index</p>
       {quotes.map(quote => (
-        <div>
+        <div key={quote.source}>
+          <p><b>Source:{quote.source}</b></p>
           <p>{quote.quote}</p>
+
         </div>
       ))}
     </div>
