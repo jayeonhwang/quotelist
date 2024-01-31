@@ -4,6 +4,7 @@ export function QuoteIndex() {
   const [quotes, setQuotes] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredQuotes, setFilteredQuotes] = useState(quotes)
+  const [searchQuotes, setSearchQuotes] = useState(quotes)
   const itemsPerPage = 15;
 
   //fetch quotes
@@ -55,12 +56,21 @@ export function QuoteIndex() {
   }
 
 
+  //search the quotes
+
+  const handleSearch = (event) => {
+    const value = event.target.value
+    const search = quotes.filter(quote => quote.quote.includes(value));
+    setSearchQuotes(search)
+  }
+
   return (
     <div>
       <p>Qoute Index</p>
       <ul>
         <div>
           <input type="text" onChange={handleFilter} />
+
           {filteredQuotes.map(quote => (
             <div key={quote.source}>
               <p><b>"{quote.quote}"</b></p>
@@ -69,6 +79,17 @@ export function QuoteIndex() {
               <hr />
             </div>
           ))}
+        </div>
+        <div>
+          <p>search: <input type="text" onChange={handleSearch} /></p>
+
+          {searchQuotes.map(quote => (
+            <div key={quote.source}>
+              <p><b>"{quote.quote}"</b></p>
+              <hr />
+            </div>
+          ))}
+
         </div>
         {currentItems.map(item => (
           <div key={item.source}>
